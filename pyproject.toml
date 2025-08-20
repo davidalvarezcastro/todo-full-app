@@ -1,0 +1,107 @@
+[project]
+name = "todoapp"
+version = "0.1.0"
+description = "Todo App using FastAPI"
+authors = [{ name = "davalv", email = "davidac0291@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.12"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+]
+
+[tool.poetry.dependencies]
+attrs = "^25.3.0"
+fastapi = "^0.116.1"
+starlette = "^0.47.2"
+sqlalchemy = "^2.0.43"
+alembic = "^1.16.4"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.12.7"
+debugpy = "^1.8.16"
+python-dotenv = "^1.1.1"
+pytest = "^8.4.1"
+
+
+[tool.poetry.group.deploy.dependencies]
+uvicorn = "^0.35.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+lint.select = [
+    "A",
+    "ARG",
+    "B",
+    "C",
+    "DTZ",
+    "E",
+    "EM",
+    "F",
+    "FBT",
+    "I",
+    "ICN",
+    "ISC",
+    "N",
+    "PLC",
+    "PLE",
+    "PLR",
+    "PLW",
+    "Q",
+    "RUF",
+    "S",
+    "T",
+    "TID",
+    "UP",
+    "W",
+    "YTT",
+    "I",
+]
+lint.ignore = [
+    # Allow non-abstract empty methods in abstract base classes
+    "B027",
+    # Allow boolean positional values in function calls, like `dict.get(... True)`
+    "FBT003",
+    # Ignore checks for possible passwords
+    "S105",
+    "S106",
+    "S107",
+    # Ignore complexity
+    "C901",
+    "PLR0911",
+    "PLR0912",
+    "PLR0913",
+    "PLR0915",
+
+    "ISC001",
+
+    # https://docs.astral.sh/ruff/rules/raw-string-in-exception/
+    "EM101",
+
+    # https://docs.astral.sh/ruff/rules/f-string-in-exception/
+    "EM102",
+]
+lint.unfixable = [
+    # Don't touch unused imports
+    "F401",
+]
+
+exclude = ["alembic"]
+[tool.ruff.lint.isort]
+case-sensitive = true
+known-first-party = ["todoapp"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.per-file-ignores]
+# Tests can use magic values, assertions, and relative imports
+"tests/**/*" = ["PLR2004", "S101", "TID252", "ARG001"]

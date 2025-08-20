@@ -1,0 +1,65 @@
+# ─── Python ──────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Byte-compiled / optimized / DLL files
+*.pyc
+*.pyo
+*.pyd
+
+# C extensions
+*.so
+
+# ─── Virtual Environments ────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.pdm-python/
+
+
+# ─── Pipenv ──────────────────────────────────────────────
+Pipfile.lock
+
+# ─── Testing ─────────────────────────────────────────────
+htmlcov/
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.tox/
+
+# ─── FastAPI / Uvicorn ──────────────────────────────────
+*.db
+*.sqlite3
+*.log
+instance/
+*.pid
+
+# ─── Docker / Deployment ────────────────────────────────
+*.env
+.env.*
+.envrc
+docker-compose.override.yml
+
+# ─── VS Code ─────────────────────────────────────────────
+.vscode/
+
+# ─── MyPy / Ruff / Linting ───────────────────────────────
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+ruff_cache/
