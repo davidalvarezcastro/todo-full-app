@@ -1,0 +1,23 @@
+networks:
+  backend:
+
+
+volumes:
+  database:
+    driver: local
+
+services:
+  backend:
+    container_name: todoapp_backend
+    build:
+      context: .
+      target: local
+    volumes:
+      - ./src:/app/todoapp/
+    env_file:
+      - .env
+    networks:
+      - backend
+    ports:
+      - 8000:8000
+      - 5678:5678 # Debugging port
