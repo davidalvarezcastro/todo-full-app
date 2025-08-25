@@ -2,7 +2,7 @@ from fastapi import Request, status
 from fastapi.responses import JSONResponse
 
 from todoapp.adapters.app.middlewares.base_middleware import BaseMiddleware
-from todoapp.domain.exceptions import NotFoundError
+from todoapp.domain.exceptions import ConflictError, NotFoundError
 
 
 class ExceptionsMiddleware(BaseMiddleware):
@@ -12,7 +12,8 @@ class ExceptionsMiddleware(BaseMiddleware):
         except NotFoundError as e:
             status_code = status.HTTP_404_NOT_FOUND
             message = e.message
+        except ConflictError as e:
+            status_code = status.HTTP_409_CONFLICT
+            message = e.message
 
-        return JSONResponse(
-            status_code=status_code, content={"details": {"msg": message}}
-        )
+        return JSONResponse(status_code=status_code, content={"details": {"msg": message}})

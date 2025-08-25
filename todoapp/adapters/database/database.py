@@ -1,10 +1,11 @@
 from contextlib import contextmanager
 
 import attrs
-from alembic import command
-from alembic.config import Config
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import sessionmaker
+
+from alembic import command
+from alembic.config import Config
 
 
 @attrs.define
