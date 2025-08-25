@@ -4,7 +4,7 @@ from sqlalchemy import select
 from todoapp.adapters.database.database import DatabaseConnector
 from todoapp.adapters.database.models import TodosORM
 from todoapp.adapters.database.repositories.repository_base import RepositoryBase
-from todoapp.domain.models.todos import Todo
+from todoapp.domain.models.todo import Todo
 from todoapp.domain.repositories.todos_repository import AbstractTodosRepository
 
 

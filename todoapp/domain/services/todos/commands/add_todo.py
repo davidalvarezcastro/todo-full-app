@@ -1,7 +1,7 @@
 import attrs
 
 from todoapp.domain.exceptions import ConflictError
-from todoapp.domain.models.todos import Todo
+from todoapp.domain.models.todo import Todo
 from todoapp.domain.repositories.data_context import DataContext
 from todoapp.domain.services.common.command_handler_base import CommandBase, CommandHandlerBase
 from todoapp.domain.services.todos.todos_dtos import TodoDTO

@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from todoapp.domain.models.todos import Todo
+from todoapp.domain.models.todo import Todo
 from todoapp.domain.repositories.repository_base import AbstractRepository
 
 
