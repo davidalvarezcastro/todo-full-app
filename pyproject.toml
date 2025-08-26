@@ -19,8 +19,9 @@ starlette = "^0.47.2"
 sqlalchemy = "^2.0.43"
 alembic = "^1.16.4"
 python-dotenv = "^1.1.1"
-python-jose = {extras = ["cryptography"], version = "^3.5.0"}
+python-jose = { extras = ["cryptography"], version = "^3.5.0" }
 mysql-connector-python = "^9.4.0"
+passlib = "^1.7.4"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -1,8 +1,7 @@
-import hashlib
-import uuid
 from datetime import timedelta
 
 import attrs
+from passlib.context import CryptContext
 
 from todoapp.config import Config
 from todoapp.domain.commons.date_utils import get_utc_now
@@ -11,6 +10,12 @@ from todoapp.domain.models.user import User, UserInfo
 from todoapp.domain.repositories.data_context import DataContext
 from todoapp.domain.services.auth.auth_dtos import AuthTokenResultDTO, LoginDTO
 from todoapp.domain.services.auth.token import AbstractToken
+
+# Configuración de Passlib
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto",
+)
 
 
 @attrs.define
@@ -24,7 +29,7 @@ class Auth:
         if user is None:
             raise UnauthorizedError("Invalid credentials. Please check your username and password.")
 
-        if not Auth.check_password(login_data.password, user.password, user.salt):
+        if not Auth.check_password(plain_password=login_data.password, hashed_password=user.password):
             raise UnauthorizedError("Invalid credentials. Please check your username and password.")
 
         user_info = UserInfo(user_id=user.id, email=user.email, roles=[user.role])
@@ -53,16 +58,10 @@ class Auth:
         )
 
     @classmethod
-    def get_hashed_password(cls, password: str, salt: str) -> str:
-        return hashlib.sha512((password + salt).encode()).hexdigest()
+    def create_hashed_password(cls, password: str) -> tuple[str, str]:
+        hashed_password = pwd_context.hash(password)
+        return hashed_password
 
     @classmethod
-    def create_hashed_password_salt(cls, password: str) -> tuple[str, str]:
-        salt = uuid.uuid4().hex
-        hashed_password = cls.get_hashed_password(password, salt)
-        return (hashed_password, salt)
-
-    @classmethod
-    def check_password(cls, plain_password: str, hashed_pasword: str, salt: str) -> bool:
-        new_hashed_password = cls.get_hashed_password(plain_password, salt)
-        return new_hashed_password == hashed_pasword
+    def check_password(cls, plain_password: str, hashed_password: str) -> bool:
+        return pwd_context.verify(plain_password, hashed_password)

@@ -41,9 +41,7 @@ class EditUserCommandHandler(CommandHandlerBase):
         logging.error("\n\n\n\n\n editusercommand \n\n\n\n\n")
 
         if command.password:
-            (password, salt) = Auth.create_hashed_password_salt(command.password)
-            user.password = password
-            user.salt = salt
+            user.password = Auth.create_hashed_password(command.password)
 
         if command.email:
             user.email = command.email

@@ -18,7 +18,6 @@ class UsersRepository(RepositoryBase[UsersORM], AbstractUsersRepository):
             username=entity_orm.username,
             email=entity_orm.email,
             password=entity_orm.password,
-            salt=entity_orm.salt,
             role=UserRole(entity_orm.role),
             is_active=entity_orm.is_active,
         )
@@ -29,7 +28,6 @@ class UsersRepository(RepositoryBase[UsersORM], AbstractUsersRepository):
             email=entity_model.email,
             username=entity_model.username,
             password=entity_model.password,
-            salt=entity_model.salt,
             role=entity_model.role.value,
             is_active=entity_model.is_active,
         )

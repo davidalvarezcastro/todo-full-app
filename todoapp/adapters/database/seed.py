@@ -35,14 +35,13 @@ class Seed:
             if user_data is not None:
                 return user_data
 
-            (password, salt) = Auth.create_hashed_password_salt(self.config.admin_user_password)
+            password = Auth.create_hashed_password(self.config.admin_user_password)
 
             user = UsersORM(
                 id=str(uuid.UUID(UUID_FIRST_USER)),
                 email=self.config.admin_user_email,
                 username="root",
                 password=password,
-                salt=salt,
                 role=UserRole.ADMIN.value,
                 is_active=True,
             )

@@ -27,14 +27,13 @@ class AddUserCommandHandler(CommandHandlerBase):
         if user:
             raise ConflictError(f"User with email '{command.email}' already exists")
 
-        (password, salt) = Auth.create_hashed_password_salt(command.password)
+        password = Auth.create_hashed_password(command.password)
 
         user = User(
             id=str(uuid.uuid4()),
             username=command.username,
             email=command.email,
             password=password,
-            salt=salt,
             role=command.role,
             is_active=True,
         )

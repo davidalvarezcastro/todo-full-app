@@ -17,7 +17,6 @@ class User(BaseModel):
     username: str
     email: str
     password: str
-    salt: str
     role: UserRole
     is_active: bool
 
