@@ -1,4 +1,3 @@
-import logging
 import uuid
 
 import attrs
@@ -37,8 +36,6 @@ class EditUserCommandHandler(CommandHandlerBase):
         user: User = self.data_context.users_repo.get_by_id(str(command.id))
         if not user:
             raise NotFoundError(f"User with email '{command.email}' does not exists")
-
-        logging.error("\n\n\n\n\n editusercommand \n\n\n\n\n")
 
         if command.password:
             user.password = Auth.create_hashed_password(command.password)

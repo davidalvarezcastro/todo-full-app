@@ -1,3 +1,5 @@
+import uuid
+
 import attrs
 
 from todoapp.domain.exceptions import ConflictError
@@ -12,6 +14,7 @@ class AddTodoCommand(CommandBase):
     title: str = attrs.field(validator=[attrs.validators.min_len(3)])
     description: str = attrs.field(validator=[attrs.validators.min_len(3)])
     priority: int = attrs.field(validator=[attrs.validators.gt(0), attrs.validators.le(10)])
+    owner_id: uuid.UUID = attrs.field(init=False)
 
 
 @attrs.define
@@ -28,7 +31,7 @@ class AddTodoCommandHandler(CommandHandlerBase):
             description=command.description,
             priority=command.priority,
             completed=False,
-            owner_id=1,
+            owner_id=str(command.owner_id),
         )
 
         todo = self.data_context.todos_repo.add(entity=todo)

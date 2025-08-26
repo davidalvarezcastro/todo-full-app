@@ -19,7 +19,7 @@ class TodosRepository(RepositoryBase[TodosORM], AbstractTodosRepository):
             description=entity_orm.description,
             priority=entity_orm.priority,
             completed=entity_orm.completed,
-            owner_id=1,
+            owner_id=str(entity_orm.owner_id),
         )
 
     def _domain_model_to_orm(self, entity_model: Todo) -> TodosORM:
@@ -29,7 +29,7 @@ class TodosRepository(RepositoryBase[TodosORM], AbstractTodosRepository):
             description=entity_model.description,
             priority=entity_model.priority,
             completed=entity_model.completed,
-            owner_id=1,
+            owner_id=str(entity_model.owner_id),
         )
 
     def get_by_owner_id(self, owner_id: int) -> Todo:

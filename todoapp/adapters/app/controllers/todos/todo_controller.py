@@ -10,7 +10,7 @@ from todoapp.adapters.app.controllers.common.base_controller import BaseControll
 from todoapp.adapters.app.controllers.common.conversion_api_domain import ConversionAPIDomain
 from todoapp.adapters.app.controllers.todos.todo_result_api import TodoResultAPI
 from todoapp.adapters.app.dependencies import get_todos_service
-from todoapp.domain.models.user import UserRole
+from todoapp.domain.models.user import UserInfo, UserRole
 from todoapp.domain.services.todos.commands.add_todo import AddTodoCommand
 from todoapp.domain.services.todos.commands.delete_todo import DeleteTodoCommand
 from todoapp.domain.services.todos.commands.edit_todo import EditTodoCommand
@@ -38,13 +38,15 @@ class TodoController(BaseController):
         @controller.post(
             "/",
             status_code=status.HTTP_201_CREATED,
-            dependencies=[Depends(Authorization([UserRole.ADMIN, UserRole.NORMAL]))],
         )
         def add_todo(
             add_todo_data: AddTodoAPI,
             todos_service: Annotated[TodosService, Depends(get_todos_service)],
+            current_user: Annotated[UserInfo, Depends(Authorization([UserRole.ADMIN, UserRole.NORMAL]))],
         ) -> TodoResultAPI:
-            return todos_service.add_todo(add_todo_command=add_todo_data.to_domain(AddTodoCommand))
+            add_todo_command: AddTodoCommand = add_todo_data.to_domain(AddTodoCommand)
+            add_todo_command.owner_id = current_user.user_id
+            return todos_service.add_todo(add_todo_command=add_todo_command)
 
         @controller.put(
             "/{todo_id}",

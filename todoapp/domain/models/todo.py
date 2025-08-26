@@ -10,7 +10,7 @@ class Todo(BaseModel):
     title: str
     description: str
     priority: int
-    owner_id: int  # FIXME: use user instance
+    owner_id: str
     completed: bool = attrs.field(default=False)
     id: str = attrs.field(default=None)
 
