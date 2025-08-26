@@ -24,10 +24,10 @@ class Seed:
         self.database_connector = get_database_connector(config=self.config)
 
     def seed(self):
-        self.create_first_user()
-        self.create_first_todo()
+        user_id = self.create_first_user()
+        self.create_first_todo(user_id=user_id)
 
-    def create_first_user(self) -> UsersORM:
+    def create_first_user(self) -> str:
         with self.database_connector.session_scope() as session:
             query = select(UsersORM).where(UsersORM.id == UUID_FIRST_USER)
             user_data = session.execute(query).scalar_one_or_none()
@@ -48,10 +48,10 @@ class Seed:
             )
 
             session.add(user)
+            session.flush()
+            return user.id
 
-            return user
-
-    def create_first_todo(self):
+    def create_first_todo(self, user_id: str):
         with self.database_connector.session_scope() as session:
             query = select(TodosORM).where(TodosORM.id == UUID_FIRST_TODO)
             todo_data = session.execute(query).scalar_one_or_none()
@@ -65,7 +65,7 @@ class Seed:
                 description="This is a todo to get used to the system",
                 priority=1,
                 completed=False,
-                owner_id=1,  # TODO: user-todo relationship
+                owner_id=user_id,
             )
 
             session.add(todo)
