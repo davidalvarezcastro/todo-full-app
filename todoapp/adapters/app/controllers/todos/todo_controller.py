@@ -5,10 +5,12 @@ import attrs
 from fastapi import APIRouter, Depends, status
 from pydantic import Field
 
+from todoapp.adapters.app.controllers.common.authorization import Authorization
 from todoapp.adapters.app.controllers.common.base_controller import BaseController
 from todoapp.adapters.app.controllers.common.conversion_api_domain import ConversionAPIDomain
 from todoapp.adapters.app.controllers.todos.todo_result_api import TodoResultAPI
 from todoapp.adapters.app.dependencies import get_todos_service
+from todoapp.domain.models.user import UserRole
 from todoapp.domain.services.todos.commands.add_todo import AddTodoCommand
 from todoapp.domain.services.todos.commands.delete_todo import DeleteTodoCommand
 from todoapp.domain.services.todos.commands.edit_todo import EditTodoCommand
@@ -36,6 +38,7 @@ class TodoController(BaseController):
         @controller.post(
             "/",
             status_code=status.HTTP_201_CREATED,
+            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
         )
         def add_todo(
             add_todo_data: AddTodoAPI,
@@ -46,6 +49,7 @@ class TodoController(BaseController):
         @controller.put(
             "/{todo_id}",
             status_code=status.HTTP_200_OK,
+            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
         )
         def edit_todo(
             todo_id: uuid.UUID,
@@ -60,6 +64,7 @@ class TodoController(BaseController):
         @controller.delete(
             "/{todo_id}",
             status_code=status.HTTP_204_NO_CONTENT,
+            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
         )
         def delete_todo(
             todo_id: uuid.UUID,
@@ -70,6 +75,7 @@ class TodoController(BaseController):
         @controller.get(
             "/{todo_id}",
             status_code=status.HTTP_200_OK,
+            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
         )
         def get_todo(
             todo_id: uuid.UUID,

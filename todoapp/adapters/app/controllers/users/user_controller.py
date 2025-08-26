@@ -5,6 +5,7 @@ import attrs
 from fastapi import APIRouter, Depends, status
 from pydantic import Field
 
+from todoapp.adapters.app.controllers.common.authorization import Authorization
 from todoapp.adapters.app.controllers.common.base_controller import BaseController
 from todoapp.adapters.app.controllers.common.conversion_api_domain import ConversionAPIDomain
 from todoapp.adapters.app.controllers.users.user_result_api import UserResultAPI
@@ -36,13 +37,21 @@ class EditUserAPI(ConversionAPIDomain):
 @attrs.define
 class UserController(BaseController):
     def _add_url_rules(self, controller: APIRouter) -> None:
-        @controller.post("/", status_code=status.HTTP_201_CREATED)
+        @controller.post(
+            "/",
+            status_code=status.HTTP_201_CREATED,
+            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
+        )
         def add_user(
             add_user_data: AddUserAPI, users_service: Annotated[UsersService, Depends(get_users_service)]
         ) -> UserResultAPI:
             return users_service.add_user(add_user_command=add_user_data.to_domain(AddUserCommand))
 
-        @controller.put("/{user_id}", status_code=status.HTTP_200_OK)
+        @controller.put(
+            "/{user_id}",
+            status_code=status.HTTP_200_OK,
+            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
+        )
         def edit_user(
             user_id: uuid.UUID,
             edit_user_data: EditUserAPI,
@@ -53,14 +62,22 @@ class UserController(BaseController):
 
             return users_service.edit_user(edit_user_command=edit_user_command)
 
-        @controller.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+        @controller.delete(
+            "/{user_id}",
+            status_code=status.HTTP_204_NO_CONTENT,
+            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
+        )
         def delete_user(
             user_id: uuid.UUID,
             users_service: Annotated[UsersService, Depends(get_users_service)],
         ):
             users_service.delete_user(delete_user_command=DeleteUserCommand(id=user_id))
 
-        @controller.get("/{user_id}", status_code=status.HTTP_200_OK)
+        @controller.get(
+            "/{user_id}",
+            status_code=status.HTTP_200_OK,
+            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
+        )
         def get_user(
             user_id: uuid.UUID,
             users_service: Annotated[UsersService, Depends(get_users_service)],

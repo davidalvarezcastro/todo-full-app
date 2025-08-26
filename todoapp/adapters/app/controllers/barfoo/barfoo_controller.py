@@ -12,10 +12,6 @@ class BarFoo(BaseModel):
 @attrs.define
 class BarFooController(BaseController):
     def _add_url_rules(self, controller: APIRouter) -> None:
-        @controller.get(
-            "/bar",
-            status_code=200,
-            # dependencies=[Depends(Authorization())],
-        )
+        @controller.get("/bar", status_code=200)
         def bar() -> BarFoo:
             return BarFoo(msg="foo")
