@@ -5,7 +5,10 @@ from fastapi.params import Depends
 from todoapp.adapters.database.database import DatabaseConnector
 from todoapp.config import Config
 from todoapp.domain.repositories.data_context import DataContext
+from todoapp.domain.services.auth.auth import Auth
+from todoapp.domain.services.auth.token import AbstractToken, JWTToken
 from todoapp.domain.services.todos.todos_service import TodosService
+from todoapp.domain.services.users.users_service import UsersService
 
 
 def get_config() -> Config:
@@ -23,7 +26,17 @@ def get_data_context(database_connector: Annotated[DatabaseConnector, Depends(ge
     return DataContext(database_connector=database_connector)
 
 
+def get_token_handler(config: Annotated[Config, Depends(get_config)]) -> AbstractToken:
+    return JWTToken(config.jwt_secret)
+
+
 def get_todos_service(
     data_context: Annotated[DataContext, Depends(get_data_context)],
 ) -> TodosService:
     return TodosService(data_context=data_context)
+
+
+def get_users_service(
+    data_context: Annotated[DataContext, Depends(get_data_context)],
+) -> UsersService:
+    return UsersService(data_context)

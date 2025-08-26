@@ -12,3 +12,7 @@ class NotFoundError(MessageError):
 
 class ConflictError(MessageError):
     pass
+
+
+class UnauthorizedError(MessageError):
+    pass

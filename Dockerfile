@@ -20,14 +20,15 @@ FROM python:3.12-alpine as base
 ENV VIRTUAL_ENV=/app/.venv \
     PATH="/app/.venv/bin:$PATH"
 
-
 COPY --from=builder /app/.venv /app/.venv 
+
+COPY alembic.ini /app/
 
 FROM base as local
 
-VOLUME [ "/app/" ]
+VOLUME [ "/app/todoapp" ]
 
-WORKDIR /app/todoapp
+WORKDIR /app/
 
-ENTRYPOINT ["python3", "-m", "debugpy", "--listen", "0.0.0.0:5678", "-m", "uvicorn", "main:app","--reload" ,"--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["python3", "-m", "debugpy", "--listen", "0.0.0.0:5678", "-m", "uvicorn", "todoapp.main:app","--reload" ,"--host", "0.0.0.0", "--port", "8000"]
 

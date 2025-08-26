@@ -1,18 +1,18 @@
 import uuid
 
-import attr
+import attrs
 
 from todoapp.domain.models.todo import Todo
 from todoapp.domain.repositories.data_context import DataContext
 from todoapp.domain.services.common.command_handler_base import CommandBase, CommandHandlerBase
 
 
-@attr.define
+@attrs.define
 class DeleteTodoCommand(CommandBase):
     id: uuid.UUID
 
 
-@attr.define
+@attrs.define
 class DeleteTodoCommandHandler(CommandHandlerBase):
     data_context: DataContext
 

@@ -7,7 +7,10 @@ from todoapp.adapters.app.dependencies import get_config, get_database_connector
 from todoapp.adapters.database.database import DatabaseConnector
 from todoapp.adapters.database.models import TodosORM, UsersORM
 from todoapp.config import Config
+from todoapp.domain.models.user import UserRole
+from todoapp.domain.services.auth.auth import Auth
 
+UUID_FIRST_USER = "521f2f68-b81c-4c83-b723-245d5b95e9b8"
 UUID_FIRST_TODO = "d4755a43-84b4-4b28-abe9-15768df4f398"
 
 
@@ -21,10 +24,32 @@ class Seed:
         self.database_connector = get_database_connector(config=self.config)
 
     def seed(self):
+        self.create_first_user()
         self.create_first_todo()
 
     def create_first_user(self) -> UsersORM:
-        pass
+        with self.database_connector.session_scope() as session:
+            query = select(UsersORM).where(UsersORM.id == UUID_FIRST_USER)
+            user_data = session.execute(query).scalar_one_or_none()
+
+            if user_data is not None:
+                return user_data
+
+            (password, salt) = Auth.create_hashed_password_salt(self.config.admin_user_password)
+
+            user = UsersORM(
+                id=str(uuid.UUID(UUID_FIRST_USER)),
+                email=self.config.admin_user_email,
+                username="root",
+                password=password,
+                salt=salt,
+                role=UserRole.ADMIN.value,
+                is_active=True,
+            )
+
+            session.add(user)
+
+            return user
 
     def create_first_todo(self):
         with self.database_connector.session_scope() as session:

@@ -18,7 +18,7 @@ G = TypeVar("G", int, uuid.UUID)
 @attrs.define
 class RepositoryBase[T](AbstractRepository):
     # IMPORTANT: We need to repeat properties in child classes
-    # in order to constructor class work because it is a limitation of attr library
+    # in order to constructor class work because it is a limitation of attrs library
     database_connector: DatabaseConnector
 
     @abstractmethod

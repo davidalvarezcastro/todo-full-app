@@ -40,5 +40,17 @@ class Config:
     environment: Environment = attrs.field(
         default=Environment(Environments(_get_value_from_env_key(key="ENVIRONMENT")))
     )
+
     db_engine: str = attrs.field(default=_get_value_from_env_key(key="DB_ENGINE"))
     db_url: str = attrs.field(default=_get_value_from_env_key(key="DB_URL"))
+
+    admin_user_email: str = attrs.field(default=_get_value_from_env_key(key="ADMIN_USER_EMAIL"))
+    admin_user_password: str = attrs.field(default=_get_value_from_env_key(key="ADMIN_USER_PASSWORD"))
+
+    jwt_secret: str = attrs.field(default=_get_value_from_env_key(key="JWT_SECRET"))
+    jwt_token_expiration_seconds: int = attrs.field(
+        default=int(_get_value_from_env_key(key="JWT_TOKEN_EXPIRATION_SECONDS"))
+    )
+    jwt_refresh_token_expiration_seconds: int = attrs.field(
+        default=int(_get_value_from_env_key(key="JWT_REFRESH_TOKEN_EXPIRATION_SECONDS"))
+    )

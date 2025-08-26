@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from todoapp.adapters.app.controllers.barfoo.barfoo_controller import BarFooController
 from todoapp.adapters.app.controllers.todos.todo_controller import TodoController
 from todoapp.adapters.app.controllers.todos.todos_controller import TodosController
+from todoapp.adapters.app.controllers.users.user_controller import UserController
+from todoapp.adapters.app.controllers.users.users_controller import UsersController
 from todoapp.adapters.app.dependencies import get_database_connector
 from todoapp.adapters.app.middlewares.exceptions_middleware import ExceptionsMiddleware
 from todoapp.adapters.database.seed import Seed
@@ -22,6 +24,9 @@ def create_app() -> FastAPI:
     app = FastAPI(root_path="/api/v1", title="Todos Repo API", version="0.0.1")
 
     BarFooController().register_on_app(app=app, url_prefix="", tags=["Healthcheck"])
+
+    UsersController().register_on_app(app=app, url_prefix="/users", tags=["Users"])
+    UserController().register_on_app(app=app, url_prefix="/user", tags=["Users"])
 
     TodoController().register_on_app(app=app, url_prefix="/todo", tags=["Todos"])
     TodosController().register_on_app(app=app, url_prefix="/todos", tags=["Todos"])

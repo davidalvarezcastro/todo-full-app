@@ -2,7 +2,7 @@ from fastapi import Request, status
 from fastapi.responses import JSONResponse
 
 from todoapp.adapters.app.middlewares.base_middleware import BaseMiddleware
-from todoapp.domain.exceptions import ConflictError, NotFoundError
+from todoapp.domain.exceptions import ConflictError, NotFoundError, UnauthorizedError
 
 
 class ExceptionsMiddleware(BaseMiddleware):
@@ -14,6 +14,9 @@ class ExceptionsMiddleware(BaseMiddleware):
             message = e.message
         except ConflictError as e:
             status_code = status.HTTP_409_CONFLICT
+            message = e.message
+        except UnauthorizedError as e:
+            status_code = status.HTTP_401_UNAUTHORIZED
             message = e.message
 
         return JSONResponse(status_code=status_code, content={"details": {"msg": message}})

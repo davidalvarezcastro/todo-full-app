@@ -14,7 +14,7 @@ class TodosRepository(RepositoryBase[TodosORM], AbstractTodosRepository):
 
     def _orm_to_domain_model(self, entity_orm: TodosORM) -> Todo:
         return Todo(
-            id=entity_orm.id,
+            id=str(entity_orm.id),
             title=entity_orm.title,
             description=entity_orm.description,
             priority=entity_orm.priority,

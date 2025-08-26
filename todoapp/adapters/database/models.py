@@ -1,5 +1,7 @@
-from sqlalchemy import Boolean, Integer, String
+from sqlalchemy import VARCHAR, Boolean, Integer, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+from todoapp.domain.models.user import UserRole
 
 
 class BaseORM(DeclarativeBase):
@@ -12,11 +14,10 @@ class UsersORM(BaseORM):
     id: Mapped[str] = mapped_column(String, primary_key=True, index=True)
     email: Mapped[str] = mapped_column(String, unique=True)
     username: Mapped[str] = mapped_column(String, unique=True)
-    first_name: Mapped[str] = mapped_column(String)
-    last_name: Mapped[str] = mapped_column(String)
-    hashed_password: Mapped[str] = mapped_column(String)
+    password: Mapped[str] = mapped_column(String)
+    salt: Mapped[str] = mapped_column(VARCHAR(255))
+    role: Mapped[int] = mapped_column(Integer, default=UserRole.NORMAL.value)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    role: Mapped[str] = mapped_column(String)
 
 
 class TodosORM(BaseORM):

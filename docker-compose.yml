@@ -13,7 +13,8 @@ services:
       context: .
       target: local
     volumes:
-      - ./src:/app/todoapp/
+      - ./todoapp:/app/todoapp/
+      - ./alembic:/app/alembic/
     env_file:
       - .env
     networks:
