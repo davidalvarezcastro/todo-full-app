@@ -40,3 +40,11 @@ def get_users_service(
     data_context: Annotated[DataContext, Depends(get_data_context)],
 ) -> UsersService:
     return UsersService(data_context)
+
+
+def get_auth(
+    data_context: Annotated[DataContext, Depends(get_data_context)],
+    config: Annotated[Config, Depends(get_config)],
+    token_handler: Annotated[AbstractToken, Depends(get_token_handler)],
+) -> Auth:
+    return Auth(data_context=data_context, config=config, token_handler=token_handler)
