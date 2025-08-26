@@ -24,7 +24,7 @@ class TodosController(BaseController):
         @controller.post(
             "/",
             status_code=status.HTTP_200_OK,
-            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
+            dependencies=[Depends(Authorization([UserRole.ADMIN, UserRole.NORMAL]))],
         )
         def get_todos(
             body: PaginationFiltersAPI[GetTodosFiltersAPI],

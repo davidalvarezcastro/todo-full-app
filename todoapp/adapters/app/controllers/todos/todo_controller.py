@@ -38,7 +38,7 @@ class TodoController(BaseController):
         @controller.post(
             "/",
             status_code=status.HTTP_201_CREATED,
-            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
+            dependencies=[Depends(Authorization([UserRole.ADMIN, UserRole.NORMAL]))],
         )
         def add_todo(
             add_todo_data: AddTodoAPI,
@@ -49,7 +49,7 @@ class TodoController(BaseController):
         @controller.put(
             "/{todo_id}",
             status_code=status.HTTP_200_OK,
-            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
+            dependencies=[Depends(Authorization([UserRole.ADMIN, UserRole.NORMAL]))],
         )
         def edit_todo(
             todo_id: uuid.UUID,
@@ -64,7 +64,7 @@ class TodoController(BaseController):
         @controller.delete(
             "/{todo_id}",
             status_code=status.HTTP_204_NO_CONTENT,
-            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
+            dependencies=[Depends(Authorization([UserRole.ADMIN, UserRole.NORMAL]))],
         )
         def delete_todo(
             todo_id: uuid.UUID,
@@ -75,7 +75,7 @@ class TodoController(BaseController):
         @controller.get(
             "/{todo_id}",
             status_code=status.HTTP_200_OK,
-            dependencies=[Depends(Authorization([UserRole.ADMIN]))],
+            dependencies=[Depends(Authorization([UserRole.ADMIN, UserRole.NORMAL]))],
         )
         def get_todo(
             todo_id: uuid.UUID,
