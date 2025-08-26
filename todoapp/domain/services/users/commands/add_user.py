@@ -8,12 +8,13 @@ from todoapp.domain.repositories.data_context import DataContext
 from todoapp.domain.services.auth.auth import Auth
 from todoapp.domain.services.common.command_handler_base import CommandBase, CommandHandlerBase
 from todoapp.domain.services.users.users_dtos import UserDTO
+from todoapp.regex import EMAIL_REGEX
 
 
 @attrs.define
 class AddUserCommand(CommandBase):
     username: str = attrs.field(validator=[attrs.validators.min_len(3)])
-    email: str = attrs.field(validator=[attrs.validators.max_len(320), attrs.validators.matches_re(r"^\S+@\S+\.\S+$")])
+    email: str = attrs.field(validator=[attrs.validators.max_len(320), attrs.validators.matches_re(EMAIL_REGEX)])
     password: str = attrs.field(validator=[attrs.validators.min_len(6)])
     role: UserRole = attrs.field(validator=[attrs.validators.instance_of(UserRole)])
 

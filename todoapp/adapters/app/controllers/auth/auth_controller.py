@@ -1,7 +1,9 @@
+import re
 from datetime import datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import Field
 
 from todoapp.adapters.app.controllers.common.base_controller import BaseController
@@ -26,6 +28,22 @@ class AuthTokenResultAPI(ConversionAPIDomain):
 
 class AuthController(BaseController):
     def _add_url_rules(self, controller: APIRouter) -> None:
+        @controller.post("/oauth_login", status_code=200)
+        def oauth_login(
+            form_data: Annotated[OAuth2PasswordRequestForm, Depends()], auth: Annotated[Auth, Depends(get_auth)]
+        ) -> AuthTokenResultAPI:
+            """
+            Login vía OAuth2.
+
+            - **username**: Debe ser un email válido (ejemplo: `bar@foo.com`)
+            - **password**: Tu contraseña
+            """
+            if not re.fullmatch(EMAIL_REGEX, form_data.username):
+                raise HTTPException(status_code=400, detail="Username must be a valid email")
+
+            login_result = auth.login(LoginDTO(email=form_data.username, password=form_data.password))
+            return AuthTokenResultAPI.from_domain(login_result)
+
         @controller.post("/login", status_code=200)
         def login(login_data: LoginAPI, auth: Annotated[Auth, Depends(get_auth)]) -> AuthTokenResultAPI:
             login_result = auth.login(login_data.to_domain(LoginDTO))
