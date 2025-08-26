@@ -16,7 +16,7 @@ def get_config() -> Config:
 
 
 def get_database_connector(config: Annotated[Config, Depends(get_config)]) -> DatabaseConnector:
-    db_url = f"{config.db_engine}:///{config.db_url}"
+    db_url = f"{config.db_engine}://{config.db_user}:{config.db_password}@database:{config.db_port}/{config.db_name}"
 
     database_conector = DatabaseConnector(db_url=db_url)
     return database_conector

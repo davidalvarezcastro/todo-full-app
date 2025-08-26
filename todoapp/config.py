@@ -42,7 +42,11 @@ class Config:
     )
 
     db_engine: str = attrs.field(default=_get_value_from_env_key(key="DB_ENGINE"))
-    db_url: str = attrs.field(default=_get_value_from_env_key(key="DB_URL"))
+    db_host: str = attrs.field(default=_get_value_from_env_key(key="DB_HOST"))
+    db_port: int = attrs.field(default=_get_value_from_env_key(key="DB_PORT"))
+    db_user: str = attrs.field(default=_get_value_from_env_key(key="DB_USER"))
+    db_password: str = attrs.field(default=_get_value_from_env_key(key="DB_PASSWORD"))
+    db_name: str = attrs.field(default=_get_value_from_env_key(key="DB_NAME"))
 
     admin_user_email: str = attrs.field(default=_get_value_from_env_key(key="ADMIN_USER_EMAIL"))
     admin_user_password: str = attrs.field(default=_get_value_from_env_key(key="ADMIN_USER_PASSWORD"))

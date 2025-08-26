@@ -7,11 +7,44 @@ volumes:
     driver: local
 
 services:
+  database:
+    container_name: todoapp_database
+    image: mysql:9.4.0
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./db-mysql/data:/var/lib/mysql
+    env_file:
+      - .env
+    networks:
+      - backend
+    ports:
+      - "${DB_PORT_BINDED:-3306}:${DB_PORT:-3306}"
+    expose:
+      - "${DB_PORT_BINDED}"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u${DB_USER} -p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500k"
+        max-file: "3"
+
   backend:
     container_name: todoapp_backend
     build:
       context: .
       target: local
+    depends_on:
+      database:
+        condition: service_healthy
     volumes:
       - ./todoapp:/app/todoapp/
       - ./alembic:/app/alembic/
@@ -20,5 +53,16 @@ services:
     networks:
       - backend
     ports:
-      - 8000:8000
+      - "${API_BINDED_PORT:-8086}:8000"
       - 5678:5678 # Debugging port
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500k"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/bar"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

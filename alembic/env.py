@@ -37,9 +37,13 @@ if not migrate_from_app:
     load_dotenv()
 
     db_engine = os.getenv("DB_ENGINE")
-    db_url = os.getenv("DB_URL")
+    db_host = os.getenv("DB_HOST")
+    db_port = os.getenv("DB_PORT_BINDED")
+    db_user = os.getenv("DB_USER")
+    db_password = os.getenv("DB_PASSWORD")
+    db_name = os.getenv("DB_NAME")
 
-    database_url = f"{db_engine}:///{db_url}"
+    database_url = f"{db_engine}://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
     config.set_main_option("sqlalchemy.url", database_url)
 
 
