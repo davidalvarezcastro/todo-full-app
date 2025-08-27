@@ -10,6 +10,9 @@ def get_predicate(self: GetTodosQueryFilters):
     if self.priority is not None:
         filter_conditions.append(TodosORM.priority == self.priority)
 
+    if self.owner_id is not None:
+        filter_conditions.append(TodosORM.owner_id == self.owner_id)
+
     return and_(*filter_conditions) if len(filter_conditions) > 0 else None
 
 

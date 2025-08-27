@@ -10,6 +10,7 @@ from todoapp.domain.services.todos.todos_dtos import TodoDTO
 @attrs.define
 class GetTodosQueryFilters(FiltersBase):
     priority: int | None = None
+    owner_id: str | None = None
 
 
 @attrs.define
