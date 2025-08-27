@@ -17,7 +17,11 @@ def create_app() -> FastAPI:
     config = Config()
 
     database_connector = get_database_connector(config=config)
-    database_connector.migrate()
+
+    # dev => runs migrations on startup
+    # prod=> handle migrations in CI/CD.
+    if not config.environment.is_production():
+        database_connector.migrate()
 
     if not config.environment.is_testing():
         Seed(config).seed()
