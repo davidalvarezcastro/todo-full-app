@@ -1,4 +1,3 @@
-import uuid
 from typing import Annotated
 
 import attrs
@@ -8,6 +7,7 @@ from pydantic import Field
 from todoapp.adapters.app.controllers.common.authorization import Authorization
 from todoapp.adapters.app.controllers.common.base_controller import BaseController
 from todoapp.adapters.app.controllers.common.conversion_api_domain import ConversionAPIDomain
+from todoapp.adapters.app.controllers.todos.dependencies import get_authorized_todo_or_404
 from todoapp.adapters.app.controllers.todos.todo_result_api import TodoResultAPI
 from todoapp.adapters.app.dependencies import get_todos_service
 from todoapp.domain.models.user import UserInfo, UserRole
@@ -51,37 +51,31 @@ class TodoController(BaseController):
         @controller.put(
             "/{todo_id}",
             status_code=status.HTTP_200_OK,
-            dependencies=[Depends(Authorization([UserRole.ADMIN, UserRole.NORMAL]))],
         )
         def edit_todo(
-            todo_id: uuid.UUID,
             edit_todo_data: EditTodoAPI,
+            todo: Annotated[TodoDTO, Depends(get_authorized_todo_or_404)],
             todos_service: Annotated[TodosService, Depends(get_todos_service)],
         ) -> TodoResultAPI:
             edit_todo_command: EditTodoCommand = edit_todo_data.to_domain(EditTodoCommand)
-            edit_todo_command.id = todo_id
-
+            edit_todo_command.id = todo.id
             return todos_service.edit_todo(edit_todo_command=edit_todo_command)
 
         @controller.delete(
             "/{todo_id}",
             status_code=status.HTTP_204_NO_CONTENT,
-            dependencies=[Depends(Authorization([UserRole.ADMIN, UserRole.NORMAL]))],
         )
         def delete_todo(
-            todo_id: uuid.UUID,
+            todo: Annotated[TodoDTO, Depends(get_authorized_todo_or_404)],
             todos_service: Annotated[TodosService, Depends(get_todos_service)],
         ):
-            todos_service.delete_todo(delete_todo_command=DeleteTodoCommand(id=todo_id))
+            todos_service.delete_todo(delete_todo_command=DeleteTodoCommand(id=todo.id))
 
         @controller.get(
             "/{todo_id}",
             status_code=status.HTTP_200_OK,
-            dependencies=[Depends(Authorization([UserRole.ADMIN, UserRole.NORMAL]))],
         )
         def get_todo(
-            todo_id: uuid.UUID,
-            todos_service: Annotated[TodosService, Depends(get_todos_service)],
+            todo: Annotated[TodoDTO, Depends(get_authorized_todo_or_404)],
         ) -> TodoResultAPI:
-            todo: TodoDTO = todos_service.get_todo(get_todo_query=GetTodoQuery(id=todo_id))
             return TodoResultAPI.from_domain(todo)
