@@ -22,39 +22,40 @@ def check_decoded_token_data(decoded_data: dict, user_data: UserInfo, expiration
     assert decoded_data["exp"] == int(expiration.timestamp())
 
 
-def test_create_token_contains_data(user_data, token_handler):
-    expiration = get_utc_now() + timedelta(hours=1)
+class TestCreateToken:
+    def test_token_contains_data(self, user_data, token_handler):
+        expiration = get_utc_now() + timedelta(hours=1)
 
-    token = token_handler.create_token(expiration_date=expiration, data=user_data.to_dict())
-    decoded_data = jwt.decode(token, SECRET, algorithms=["HS256"])
+        token = token_handler.create_token(expiration_date=expiration, data=user_data.to_dict())
+        decoded_data = jwt.decode(token, SECRET, algorithms=["HS256"])
 
-    check_decoded_token_data(decoded_data=decoded_data, user_data=user_data, expiration=expiration)
-
-
-def test_is_valid_token_returns_true_for_valid_token(user_data, token_handler):
-    expiration = get_utc_now() + timedelta(hours=1)
-    token = token_handler.create_token(expiration_date=expiration, data=user_data.to_dict())
-
-    assert token_handler.is_valid_token(token) is True
+        check_decoded_token_data(decoded_data=decoded_data, user_data=user_data, expiration=expiration)
 
 
-def test_is_valid_token_returns_false_for_invalid_token(token_handler):
-    invalid_token = "invalid.token.value"
+class TestIsValidToken:
+    def test_success_for_valid_token(self, user_data, token_handler):
+        expiration = get_utc_now() + timedelta(hours=1)
+        token = token_handler.create_token(expiration_date=expiration, data=user_data.to_dict())
 
-    assert token_handler.is_valid_token(invalid_token) is False
+        assert token_handler.is_valid_token(token) is True
+
+    def test_fails_for_invalid_token(self, token_handler):
+        invalid_token = "invalid.token.value"
+
+        assert token_handler.is_valid_token(invalid_token) is False
+
+    def test_fails_for_expired_token(self, user_data, token_handler):
+        expiration = get_utc_now() - timedelta(hours=1)
+        token = token_handler.create_token(expiration_date=expiration, data=user_data.to_dict())
+
+        assert token_handler.is_valid_token(token) is False
 
 
-def test_get_token_data_returns_correct_data(user_data, token_handler):
-    expiration = get_utc_now() + timedelta(hours=1)
-    token = token_handler.create_token(expiration_date=expiration, data=user_data.to_dict())
+class TestGetTokenData:
+    def test_returns_correct_data(self, user_data, token_handler):
+        expiration = get_utc_now() + timedelta(hours=1)
+        token = token_handler.create_token(expiration_date=expiration, data=user_data.to_dict())
 
-    decoded_data = token_handler.get_token_data(token)
+        decoded_data = token_handler.get_token_data(token)
 
-    check_decoded_token_data(decoded_data=decoded_data, user_data=user_data, expiration=expiration)
-
-
-def test_is_valid_token_return_false_for_expired_token(user_data, token_handler):
-    expiration = get_utc_now() - timedelta(hours=1)
-    token = token_handler.create_token(expiration_date=expiration, data=user_data.to_dict())
-
-    assert token_handler.is_valid_token(token) is False
+        check_decoded_token_data(decoded_data=decoded_data, user_data=user_data, expiration=expiration)

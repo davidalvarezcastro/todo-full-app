@@ -72,58 +72,58 @@ def auth_service(mock_data_context, mock_config, mock_token_handler):
     )
 
 
-def test_login_success(auth_service, mock_user, mock_token_handler):
-    login_data = LoginDTO(email=mock_user.email, password=PASSWORD)
+class TestLogin:
+    def test_success(self, auth_service, mock_user, mock_token_handler):
+        login_data = LoginDTO(email=mock_user.email, password=PASSWORD)
 
-    result: AuthTokenResultDTO = auth_service.login(login_data)
+        result: AuthTokenResultDTO = auth_service.login(login_data)
 
-    assert isinstance(result, AuthTokenResultDTO)
-    # we do not care about the generated token
-    assert result.token.startswith("TOKEN-")
-    assert result.refresh_token.startswith("TOKEN-")
-    mock_token_handler.create_token.assert_called()
+        assert isinstance(result, AuthTokenResultDTO)
+        # we do not care about the generated token
+        assert result.token.startswith("TOKEN-")
+        assert result.refresh_token.startswith("TOKEN-")
+        mock_token_handler.create_token.assert_called()
 
+    def test_fails_when_invalid_email(self, auth_service, mock_data_context):
+        mock_data_context.users_repo.get_by_email.return_value = None
+        login_data = LoginDTO(email="notfound@example.com", password=PASSWORD)
 
-def test_login_invalid_email(auth_service, mock_data_context):
-    mock_data_context.users_repo.get_by_email.return_value = None
-    login_data = LoginDTO(email="notfound@example.com", password=PASSWORD)
+        with pytest.raises(UnauthorizedError):
+            auth_service.login(login_data)
 
-    with pytest.raises(UnauthorizedError):
-        auth_service.login(login_data)
+    def test_fails_when_invalid_password(self, auth_service, mock_data_context, mock_user):
+        mock_user.password = Auth.create_hashed_password("anotherpassword")
+        login_data = LoginDTO(email=mock_user.email, password="wrong")
 
-
-def test_login_invalid_password(auth_service, mock_data_context, mock_user):
-    mock_user.password = Auth.create_hashed_password("anotherpassword")
-    login_data = LoginDTO(email=mock_user.email, password="wrong")
-
-    with pytest.raises(UnauthorizedError):
-        auth_service.login(login_data)
-
-
-def test_refresh_success(auth_service, mock_token_handler):
-    mock_token_handler.is_valid_token.return_value = True
-    fake_token = "validtoken"
-
-    result: AuthTokenResultDTO = auth_service.refresh(fake_token)
-
-    assert isinstance(result, AuthTokenResultDTO)
-    # checking if a new token was generated
-    assert result.token.startswith("TOKEN-")
-    assert result.refresh_token.startswith("TOKEN-")
-    mock_token_handler.create_token.assert_called()
+        with pytest.raises(UnauthorizedError):
+            auth_service.login(login_data)
 
 
-def test_refresh_invalid_token(auth_service, mock_token_handler):
-    mock_token_handler.is_valid_token.return_value = False
-    fake_token = "badtoken"
+class TestRefreshToken:
+    def test_success_when_valid_token(self, auth_service, mock_token_handler):
+        mock_token_handler.is_valid_token.return_value = True
+        fake_token = "validtoken"
 
-    with pytest.raises(UnauthorizedError):
-        auth_service.refresh(fake_token)
+        result: AuthTokenResultDTO = auth_service.refresh(fake_token)
+
+        assert isinstance(result, AuthTokenResultDTO)
+        # checking if a new token was generated
+        assert result.token.startswith("TOKEN-")
+        assert result.refresh_token.startswith("TOKEN-")
+        mock_token_handler.create_token.assert_called()
+
+    def test_fails_when_invalid_token(self, auth_service, mock_token_handler):
+        mock_token_handler.is_valid_token.return_value = False
+        fake_token = "badtoken"
+
+        with pytest.raises(UnauthorizedError):
+            auth_service.refresh(fake_token)
 
 
-def test_password_hashing_and_checking():
-    password = "supersecret"
-    hashed = Auth.create_hashed_password(password)
+class TestCheckPassword:
+    def test_password_hashing(self):
+        password = "supersecret"
+        hashed = Auth.create_hashed_password(password)
 
-    assert Auth.check_password(password, hashed) is True
-    assert Auth.check_password("wrongpassword", hashed) is False
+        assert Auth.check_password(password, hashed) is True
+        assert Auth.check_password("wrongpassword", hashed) is False
