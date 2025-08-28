@@ -3,12 +3,15 @@ from unittest.mock import patch
 
 import pytest
 
-from todoapp.adapters.app.dependencies import get_config, get_database_connector, get_users_service
+from todoapp.adapters.app.dependencies import get_config, get_database_connector, get_todos_service, get_users_service
 from todoapp.adapters.database.database import DatabaseConnector
 from todoapp.adapters.database.models import BaseORM
 from todoapp.config import Config
+from todoapp.domain.models.todo import Todo
 from todoapp.domain.models.user import User, UserRole
 from todoapp.domain.repositories.data_context import DataContext
+from todoapp.domain.services.todos.commands.add_todo import AddTodoCommand
+from todoapp.domain.services.todos.todos_service import TodosService
 from todoapp.domain.services.users.commands.add_user import AddUserCommand
 from todoapp.domain.services.users.users_service import UsersService
 
@@ -38,6 +41,11 @@ def datacontext(db) -> DataContext:
 @pytest.fixture(scope="function")
 def users_service(datacontext) -> UsersService:
     return get_users_service(data_context=datacontext)
+
+
+@pytest.fixture(scope="function")
+def todos_service(datacontext) -> TodosService:
+    return get_todos_service(data_context=datacontext)
 
 
 @pytest.fixture
@@ -90,3 +98,52 @@ def users_data(users_service: UsersService) -> list[User]:
             )
 
     return users
+
+
+@pytest.fixture
+def todos_data(users_data: list[User], todos_service: TodosService) -> list[Todo]:
+    todos: list[Todo] = []
+
+    uuids = iter(
+        [
+            "1c0d3c74-1a4c-48a7-b7c0-88b6b62f0c1c",
+            "63b1a5d7-6a3b-4a6d-9873-1f1e5d4c5e35",
+            "f77a2c95-f038-4c02-84df-cc2e1b5b77ad",
+            "4f48dbde-1f38-4ac7-a3c2-5595dc2e0b38",
+        ]
+    )
+
+    for i, user in enumerate([user for user in users_data if user.role == UserRole.NORMAL]):
+        todos.append(
+            Todo(
+                id=str(uuid.UUID(next(uuids))),
+                title=f"title {i}",
+                description=f"description {i}",
+                priority=5 + i,
+                completed=False,
+                owner_id=str(user.id),
+            ),
+        )
+        todos.append(
+            Todo(
+                id=str(uuid.UUID(next(uuids))),
+                title=f"title {i} II",
+                description=f"description {i} II",
+                priority=5 + i,
+                completed=False,
+                owner_id=str(user.id),
+            ),
+        )
+
+    for todo in todos:
+        with patch("todoapp.domain.services.todos.commands.add_todo.uuid.uuid4") as uuid_faker:
+            uuid_faker.return_value = todo.id
+            add_todo_command = AddTodoCommand(
+                title=todo.title,
+                description=todo.description,
+                priority=todo.priority,
+            )
+            add_todo_command.owner_id = todo.owner_id
+            todos_service.add_todo(add_todo_command=add_todo_command)
+
+    return todos

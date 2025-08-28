@@ -12,7 +12,7 @@ from todoapp.domain.services.auth.auth import Auth
 from todoapp.domain.services.users.users_dtos import UserDTO
 
 
-class TestAddUsersAPI:
+class TestAddUserAPI:
     def test_creates_user_when_valid_data(
         self, authorization_admin_header, datacontext: DataContext, client: TestClient
     ):
