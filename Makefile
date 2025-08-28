@@ -10,3 +10,9 @@ install_dependencies: ## Install pyproject.toml dependencies
 
 dev:  ## Deploy Fast Api App
 	docker compose up --build -d
+
+deploy_test_db: ## Create a testing database
+	docker compose --env-file .env.testing -f docker-compose.testing.yml up --build -d
+
+run_tests: ## Run all tests
+	poetry run pytest tests

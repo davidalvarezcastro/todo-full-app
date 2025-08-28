@@ -26,13 +26,13 @@ class Environment:
     environment: Environments = attrs.field(default=Environments.PRODUCTION)
 
     def is_testing(self) -> bool:
-        return self == Environments.TESTING
+        return self.environment == Environments.TESTING
 
     def is_development(self) -> bool:
-        return self == Environments.DEVELOPMENT
+        return self.environment == Environments.DEVELOPMENT
 
     def is_production(self) -> bool:
-        return self == Environments.PRODUCTION
+        return self.environment == Environments.PRODUCTION
 
 
 @attrs.define
