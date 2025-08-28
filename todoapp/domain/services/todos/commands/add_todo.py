@@ -27,6 +27,7 @@ class AddTodoCommandHandler(CommandHandlerBase):
             raise ConflictError(f"Todo with title '{command.title}' already exists")
 
         todo = Todo(
+            id=str(uuid.uuid4()),
             title=command.title,
             description=command.description,
             priority=command.priority,

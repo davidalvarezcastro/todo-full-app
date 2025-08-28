@@ -1,0 +1,24 @@
+networks:
+  backend:
+
+
+volumes:
+  database:
+    driver: local
+
+services:
+  database:
+    container_name: todoapp_database_testing
+    image: mysql:9.4.0
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    env_file:
+      - .env.testing
+    ports:
+      - "${DB_PORT_BINDED:-5432}:3306"
+    expose:
+      - "${DB_PORT_BINDED:-5432}"
