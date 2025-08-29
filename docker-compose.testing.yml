@@ -1,7 +1,6 @@
 networks:
   backend:
 
-
 volumes:
   database:
     driver: local
@@ -17,7 +16,7 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
     env_file:
-      - .env.testing
+      - ./backend/.env.testing
     ports:
       - "${DB_PORT_BINDED:-5432}:3306"
     expose:

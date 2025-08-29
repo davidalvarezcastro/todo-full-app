@@ -17,7 +17,8 @@ def get_config() -> Config:
 
 def get_database_connector(config: Annotated[Config, Depends(get_config)]) -> DatabaseConnector:
     db_host = config.db_host if config.environment.is_testing() else "database"
-    db_url = f"{config.db_engine}://{config.db_user}:{config.db_password}@{db_host}:{config.db_port}/{config.db_name}"
+    db_port = config.db_port if config.environment.is_testing() else "3306"
+    db_url = f"{config.db_engine}://{config.db_user}:{config.db_password}@{db_host}:{db_port}/{config.db_name}"
 
     database_conector = DatabaseConnector(db_url=db_url)
     return database_conector
