@@ -101,14 +101,21 @@ class TestEditTodoAPI:
         ],
     )
     def test_edit_validation_error(
-        self, description: str, priority: int, completed: bool, authorization_admin_header, client: TestClient
+        self,
+        description: str,
+        priority: int,
+        completed: bool,
+        authorization_admin_header,
+        todos_data: list[Todo],
+        client: TestClient,
     ):
+        existing_todo = todos_data[1]
         todo_request_body = {
             "description": description,
             "priority": priority,
             "completed": completed,
         }
-        response = client.post("/todo/", headers=authorization_admin_header, json=todo_request_body)
+        response = client.put(f"/todo/{existing_todo.id}", headers=authorization_admin_header, json=todo_request_body)
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
