@@ -1,7 +1,6 @@
 networks:
   backend:
 
-
 volumes:
   database:
     driver: local
@@ -19,13 +18,13 @@ services:
     volumes:
       - ./db-mysql/data:/var/lib/mysql
     env_file:
-      - .env
+      - ./backend/.env
     networks:
       - backend
     ports:
-      - "${DB_PORT_BINDED:-3306}:${DB_PORT:-3306}"
+      - "${DB_PORT:-3306}:3306"
     expose:
-      - "${DB_PORT_BINDED}"
+      - "${DB_PORT}"
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -u${DB_USER} -p${DB_PASSWORD}"]
       interval: 10s
@@ -40,20 +39,20 @@ services:
   backend:
     container_name: todoapp_backend
     build:
-      context: .
+      context: ./backend
       target: local
     depends_on:
       database:
         condition: service_healthy
     volumes:
-      - ./todoapp:/app/todoapp/
-      - ./alembic:/app/alembic/
+      - ./backend/todoapp:/app/todoapp/
+      - ./backend/alembic:/app/alembic/
     env_file:
-      - .env
+      - ./backend/.env
     networks:
       - backend
     ports:
-      - "${API_BINDED_PORT:-8086}:8000"
+      - "${API_PORT:-8086}:8000"
       - 5678:5678 # Debugging port
     logging:
       driver: "json-file"

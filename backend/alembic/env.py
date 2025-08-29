@@ -38,7 +38,7 @@ if not migrate_from_app:
 
     db_engine = os.getenv("DB_ENGINE")
     db_host = os.getenv("DB_HOST")
-    db_port = os.getenv("DB_PORT_BINDED")
+    db_port = os.getenv("DB_PORT")
     db_user = os.getenv("DB_USER")
     db_password = os.getenv("DB_PASSWORD")
     db_name = os.getenv("DB_NAME")
