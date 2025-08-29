@@ -147,3 +147,34 @@ def todos_data(users_data: list[User], todos_service: TodosService) -> list[Todo
             todos_service.add_todo(add_todo_command=add_todo_command)
 
     return todos
+
+
+@pytest.fixture
+def make_todo_for_user(todos_service: TodosService):
+    def _make_todo_for_user(
+        owner_id: str, *, todo_id: str | None = None, title: str = "title", description: str = "desc", priority: int = 5
+    ) -> Todo:
+        todo_id = todo_id or str(uuid.uuid4())
+        todo = Todo(
+            id=todo_id,
+            title=title,
+            description=description,
+            priority=priority,
+            completed=False,
+            owner_id=owner_id,
+        )
+
+        # patch UUID so that the service generates the same id
+        with patch("todoapp.domain.services.todos.commands.add_todo.uuid.uuid4") as uuid_faker:
+            uuid_faker.return_value = todo.id
+            add_todo_command = AddTodoCommand(
+                title=todo.title,
+                description=todo.description,
+                priority=todo.priority,
+            )
+            add_todo_command.owner_id = owner_id
+            todos_service.add_todo(add_todo_command=add_todo_command)
+
+        return todo
+
+    return _make_todo_for_user

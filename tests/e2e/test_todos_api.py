@@ -9,6 +9,7 @@ from todoapp.adapters.app.controllers.todos.todo_result_api import TodoResultAPI
 from todoapp.domain.models.todo import Todo
 from todoapp.domain.repositories.data_context import DataContext
 from todoapp.domain.services.todos.todos_dtos import TodoDTO
+from todoapp.domain.services.users.users_dtos import UserDTO
 
 
 class TestAddTodoAPI:
@@ -147,6 +148,30 @@ class TestGetTodoAPI:
     def test_get_not_found(self, authorization_admin_header, todos_data: list[Todo], client: TestClient):  # noqa: ARG002
         fake_non_existing_todo_id = uuid.uuid4()
         response = client.get(f"/todo/{fake_non_existing_todo_id}", headers=authorization_admin_header)
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+class TestGetTodoAPIWithAuthentication:
+    def test_success_when_normal_user_owned_todo(
+        self, authorization_normal_header, make_todo_for_user, user_normal_mock: tuple[UserDTO, str], client: TestClient
+    ):
+        user, _ = user_normal_mock
+
+        todo = make_todo_for_user(
+            owner_id=str(user.id),
+            todo_id=uuid.uuid4(),
+            title="title for my todo",
+            description="this is a fake todo",
+        )
+
+        response = client.get(f"/todo/{todo.id}", headers=authorization_normal_header)
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_not_found_when_other_user_owned_todo(
+        self, authorization_normal_header, todos_data: list[Todo], client: TestClient
+    ):
+        other_todo = todos_data[1]
+        response = client.get(f"/todo/{other_todo.id}", headers=authorization_normal_header)
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
