@@ -23,7 +23,6 @@ class AddTodoAPI(ConversionAPIDomain):
     title: str = Field(min_length=3)
     description: str = Field(min_length=3)
     priority: int = Field(gt=0, lte=10)
-    # owner_id # TODO: cuando esté la relación de usuarios
 
 
 class EditTodoAPI(ConversionAPIDomain):
