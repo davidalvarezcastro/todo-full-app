@@ -19,4 +19,4 @@ class ExceptionsMiddleware(BaseMiddleware):
             status_code = status.HTTP_401_UNAUTHORIZED
             message = e.message
 
-        return JSONResponse(status_code=status_code, content={"details": {"msg": message}})
+        return JSONResponse(status_code=status_code, content={"detail": {"msg": message}})
