@@ -1,18 +1,28 @@
-# web
+# Todo App
 
-This template should help get you started developing with Vue 3 in Vite.
+![Vue 3](https://img.shields.io/badge/Vue%203-35495E?logo=vue.js&logoColor=4FC08D)
+![Vue Router](https://img.shields.io/badge/Vue%20Router-35495E?logo=vue.js&logoColor=white)
+![Pinia](https://img.shields.io/badge/Pinia-FFD859?logo=vue.js&logoColor=black)
+![Vue Query](https://img.shields.io/badge/Vue%20Query-FF4154?logo=reactquery&logoColor=white)
+![VueUse](https://img.shields.io/badge/VueUse-42b883?logo=vue.js&logoColor=white)
+![Zod](https://img.shields.io/badge/Zod-3068B7?logo=zod&logoColor=white)
+![DaisyUI](https://img.shields.io/badge/DaisyUI-5A0EF8?logo=daisyui&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 
-## Recommended IDE Setup
+Todo Web App
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Tech Stack
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
+- [Vue 3](https://vuejs.org/) - Frontend framework
+- [Vue Router](https://router.vuejs.org/) - Client-side routing
+- [Pinia](https://pinia.vuejs.org/) - State management
+- [Vue Query](https://tanstack.com/query/latest/docs/vue/overview) - Data fetching & caching
+- [VueUse](https://vueuse.org/) - Collection of Vue composition utilities
+- [Zod](https://zod.dev/) - Schema validation
+- [DaisyUI](https://daisyui.com/) - Tailwind CSS component library
+- [Vite](https://vitejs.dev/) - Build tool
+- [TypeScript](https://www.typescriptlang.org/) - Type safety
 
 ## Project Setup
 
