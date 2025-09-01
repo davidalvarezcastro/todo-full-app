@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useLogin } from '@/composables/queries/useAuth'
+import { useLogin } from '@/composables/mutations/useAuth'
 import type { AxiosError } from 'axios'
 import { useRouter } from 'vue-router'
 

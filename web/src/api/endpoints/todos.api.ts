@@ -32,3 +32,11 @@ export const getTodos = async ({
     throw error
   }
 }
+
+export const deleteTodo = async ({ todo }: { todo: string }): Promise<void> => {
+  try {
+    await apiClient.delete<GetTodosResponse>(`/todo/${todo}`)
+  } catch (error) {
+    throw error
+  }
+}
