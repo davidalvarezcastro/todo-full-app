@@ -14,7 +14,7 @@ from todoapp.domain.services.users.users_dtos import UserDTO
 load_dotenv(".env.testing", override=True)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def client() -> Generator[TestClient]:
     from todoapp.adapters.app.app import create_app  # noqa: PLC0415
 
