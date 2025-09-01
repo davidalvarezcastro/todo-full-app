@@ -2,7 +2,7 @@
 import { useDeleteTodo } from '@/composables/mutations/useDeleteTodo'
 import { useTodosQuery } from '@/composables/queries/useTodosQuery'
 import { ref, computed } from 'vue'
-import TodoForm from '@/components/TodoForm.vue'
+import TodoFormManager from '@/components/TodoFormManager.vue'
 import type { Todo, TodoCreate, TodoUpdate } from '@/domain/models/todo.model'
 import { useCreateTodo } from '@/composables/mutations/useCreateTodo'
 import { useUpdateTodo } from '@/composables/mutations/useUpdateTodo'
@@ -202,7 +202,11 @@ const closeModal = () => {
           <button class="btn btn-sm btn-circle absolute right-2 top-2" @click="closeModal">
             ✕
           </button>
-          <TodoForm :todo="editingTodo" @create="handleCreateTodo" @update="handleUpdateTodo" />
+          <TodoFormManager
+            :todo="editingTodo"
+            @create="handleCreateTodo"
+            @update="handleUpdateTodo"
+          />
         </div>
       </div>
     </div>
