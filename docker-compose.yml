@@ -37,7 +37,8 @@ services:
         max-file: "3"
 
   backend:
-    container_name: todoapp_backend
+    image: todoapp_backend_dev
+    container_name: todoapp_backend_dev
     build:
       context: ./backend
       target: local
@@ -53,7 +54,8 @@ services:
       - backend
     ports:
       - "${API_PORT:-8086}:8000"
-      - 5678:5678 # Debugging port
+      - 5678:5678
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -65,3 +67,15 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+
+  frontend:
+    image: todoapp_frontend_dev
+    container_name: todoapp_frontend_dev
+    build:
+      context: ./web
+      target: dev
+    ports:
+      - 5174:5173
+    volumes:
+      - ./web:/app
+    restart: unless-stopped
